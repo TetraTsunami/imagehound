@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div class="grid">
+  {#each Array( 10).map((e, i) => i) as i}
+    <div class="h-10 w-10 rounded-md bg-slate-400 shadow-i-md">
+      <h2>i</h2>
+    </div>
+  {/each}
+</div>
