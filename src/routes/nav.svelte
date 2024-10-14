@@ -11,10 +11,11 @@
   });
 </script>
 
-<nav class="sticky flex max-w-fit flex-col gap-4 pt-8">
+<nav class="sticky top-0 min-w-fit max-w-fit">
+  <div class="flex h-screen flex-col gap-4 overflow-scroll py-8 pr-4">
   <h1 class="text-lg font-semibold">Breeds</h1>
   <input type="search" placeholder="Search" bind:value={search} 
-    class="w-full rounded-md border border-gray-300 bg-white p-2 text-gray-800 dark:border-gray-700 dark:bg-slate-800 dark:text-gray-200"/>
+    class="w-32 rounded-md border border-gray-300 bg-white p-2 text-gray-800 md:w-44 dark:border-gray-700 dark:bg-slate-800 dark:text-gray-200"/>
   
   <ul class="flex flex-col gap-2">
   {#each filtered as [breed, subBreeds]}
@@ -51,4 +52,5 @@
     </li>
   {/each}
   </ul>
+</div>
 </nav>

@@ -1,21 +1,30 @@
 <script lang="ts">
-  import { page } from "$app/stores";
   import type { PageData } from './$types';
-  // import { error } from '@sveltejs/kit';
-  
+	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
+
 	export let data: PageData;
-  console.log(data)
-  $: images = data.images;
-  
-  // if (breed[0] !in breeds || 
-  //   breed.length > 1 && !breeds[breed[0]].includes(breed[1])) {
-  //   error(404, "Breed not found");
-  // }
-  // const images: string[] = [];
+
+	$: images = data.images;
+  $: breed = $page.params.breed.split("/").map(b => b[0].toUpperCase() + b.slice(1));
 </script>
 
-<div class="flex flex-wrap gap-4">
-  {#each images as image}
-    <img src={image} alt={"dog"} class="rounded-lg shadow-lg"/>
-  {/each}
+<div class="w-full">
+  <h1 class="my-8 text-center text-2xl font-semibold">{breed.join(", ")}</h1>
+  <div class="images-grid">
+    {#each images as image, i (image)}
+      <a in:fade={{ delay: 300, duration: 450 }} out:fade={{ duration: 450 }}
+        href={image} target="_blank" rel="noopener noreferrer" class="w-[min(100%, 20rem)]">
+        <img src={image} alt={breed.join(", ")} class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg" loading={i > 20 ? "lazy" : "eager"}/>
+      </a>
+    {/each}
+  </div>
 </div>
+
+<style lang="scss">
+  .images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 0.5rem;
+  }
+</style>

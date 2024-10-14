@@ -5,8 +5,8 @@
 	export let data: LayoutData;
 </script>
 
-<div class="flex min-h-screen w-full justify-center">
-  <div class="container relative flex gap-4">
+<div class="flex min-h-screen w-full justify-center px-2">
+  <div class="container flex max-h-screen gap-4 overflow-scroll">
     <Nav breeds={data.breeds}/>
     <slot></slot>
   </div>
