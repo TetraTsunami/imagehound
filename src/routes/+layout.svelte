@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import "../app.css";
 	import Nav from "./nav.svelte";
-  /** @type {import('./$types').LayoutData} */
-	export let data;
+  import type { LayoutData } from './$types';
+	export let data: LayoutData;
 </script>
 
 <div class="flex min-h-screen w-full justify-center">

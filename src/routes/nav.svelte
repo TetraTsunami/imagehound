@@ -1,11 +1,10 @@
 <script lang="ts">
   import { page } from '$app/stores';  
   
-  export let breeds: Record<string, string[]> = {};
+  export let breeds: [string, string[]][] = [];
   let search = "";
-  const path = $page.url.pathname.split("/");
-  const entries = Object.entries(breeds);
-  $: filtered = entries.filter(([breed, subBreeds]) => {
+  $: path = $page.url.pathname.split("/");
+  $: filtered = breeds.filter(([breed, subBreeds]) => {
     if (breed.includes(search)) return true;
     if (subBreeds.some(subBreed => subBreed.includes(search))) return true;
     return false;
