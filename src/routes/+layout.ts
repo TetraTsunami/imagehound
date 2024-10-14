@@ -7,7 +7,7 @@ export const load: LayoutLoad = async () => {
       .then((res) => res.json())
       .then((data) => Object.entries(data.message) as [string, string[]][])
       .catch((err) => error(500, err.message))
-    };
+  };
 }
 
 export const ssr = false;
