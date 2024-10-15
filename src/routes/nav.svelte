@@ -1,14 +1,46 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+  import { selectedBreeds } from '../stores';
 
 	export let breeds: [string, string[]][] = [];
-	let search = '';
-	$: path = $page.url.pathname.split('/');
+
+  let search = '';
+  let selected: string[][] = [];
+  selectedBreeds.subscribe((value) => {
+    selected = value;
+  });
 	$: filtered = breeds.filter(([breed, subBreeds]) => {
 		if (breed.includes(search)) return true;
 		if (subBreeds.some((subBreed) => subBreed.includes(search))) return true;
 		return false;
 	});
+  const isSelected = (selected: string[][], breed: string, subBreed?: string) => {
+    if (subBreed) {
+      return selected.some(([b, sb]) => b === breed && (sb === subBreed || !sb));
+    }
+    return selected.some(([b, sb]) => b === breed && !sb);
+  };
+  const checkboxEvent = (e: Event, breed: string, subBreed?: string) => {
+    setSelection((e.target as HTMLInputElement).checked, breed, subBreed);
+  }
+  const setSelection = (state: boolean, breed: string, subBreed?: string) => {
+    selectedBreeds.update((value) => {
+      if (subBreed) {
+        if (state) {
+          value.push([breed, subBreed]);
+        } else {
+          const index = value.findIndex(([b, sb]) => b === breed && sb === subBreed);
+          value.splice(index, 1);
+        }
+      } else {
+        if (state) {
+          value.push([breed, '']);
+        } else {
+          value = value.filter(([b, sb]) => b !== breed);
+        }
+      }
+      return value;
+    });
+  }
 </script>
 
 <nav class="sticky top-0 min-w-fit max-w-fit">
@@ -25,46 +57,40 @@
 			{#each filtered as [breed, subBreeds]}
 				<li>
 					{#if subBreeds.length == 0}
-						<a
-							href={`/${breed}`}
-							class={`
-          ${
-						path.includes(breed)
-							? 'text-blue-500 dark:text-blue-300'
-							: 'text-gray-800 dark:text-gray-200'
-					}`}
-						>
-							{breed[0].toUpperCase() + breed.slice(1)}
-						</a>
+
+            <label for={breed} class={`w-full inline-block cursor-pointer ${isSelected(selected, breed) ? 
+            'text-blue-500 dark:text-blue-300'
+            : 'text-gray-800 dark:text-gray-200'}`}>
+              <input type="checkbox" checked={isSelected(selected, breed)} id={breed} class="hidden"
+                on:change={(e) => checkboxEvent(e, breed)} />
+              {breed[0].toUpperCase() + breed.slice(1)}
+            </label>
+
 					{:else}
-						<details open={path.includes(breed) || Boolean(search)}>
+						<details open={isSelected(selected, breed) || Boolean(search)}>
 							<summary>
-								<a
-									href={`/${breed}`}
-									class={`
-            ${
-							path.includes(breed)
-								? 'text-blue-500 dark:text-blue-300'
-								: 'text-gray-800 dark:text-gray-200'
-						}`}
-								>
-									{breed[0].toUpperCase() + breed.slice(1)}
-								</a>
+
+								<label for={breed} class={`inline-block cursor-pointer ${isSelected(selected, breed) ? 
+                  'text-blue-500 dark:text-blue-300'
+                  : 'text-gray-800 dark:text-gray-200'}`}>
+                  <input type="checkbox" checked={isSelected(selected, breed)} id={breed} class="hidden"
+                    on:change={(e) => checkboxEvent(e, breed)} />
+                  {breed[0].toUpperCase() + breed.slice(1)}
+                </label>
+
 							</summary>
 							<ul class="pl-4">
 								{#each subBreeds as subBreed}
 									<li>
-										<a
-											href={`/${breed}/${subBreed}`}
-											class={`
-              ${
-								path.includes(breed) && path.includes(subBreed)
-									? 'text-blue-500 dark:text-blue-300'
-									: 'text-gray-800 dark:text-gray-200'
-							}`}
-										>
-											{subBreed[0].toUpperCase() + subBreed.slice(1)}
-										</a>
+
+										<label for={subBreed} class={`w-full inline-block cursor-pointer ${isSelected(selected, breed, subBreed) ? 
+                  'text-blue-500 dark:text-blue-300'
+                  : 'text-gray-800 dark:text-gray-200'}`}>
+                  <input type="checkbox" checked={isSelected(selected, breed, subBreed)} id={subBreed} class="hidden"
+                    on:change={(e) => checkboxEvent(e, breed, subBreed)} />
+                  {subBreed[0].toUpperCase() + subBreed.slice(1)}
+                  </label>
+
 									</li>
 								{/each}
 							</ul>
