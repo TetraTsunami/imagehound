@@ -6,20 +6,35 @@
 	import { flip } from 'svelte/animate';
 	import { quartOut } from 'svelte/easing';
 
+	// Contains the selected breeds and sub-breeds
 	let selected: string[][] = [];
+	// Contains the images for each breed
 	let photos: Record<string, string[]> = {};
-	let popup: any;
+	// Contains the src and alt for the popup image, if any
+	let popup: { src: string; alt: string } | null = null;
 	
-	// Calculates the key for the photos object, so we can cache the photos for each breed
+	/**
+	 * Calculates the key for the photos object, so we can cache the photos for each breed
+	 * @param breed
+	 * @param subBreed
+	 */
 	const breedKey = (breed: string, subBreed?: string) =>
 		subBreed ? `${breed}/${subBreed}` : breed;
-	// Combines multiple arrays into one, spreading the elements in a round-robin fashion
+	/**
+	 * Combines multiple arrays into one, spreading the elements in a round-robin fashion
+	 * @example combine([1, 4], [2, 5], [3, 6]) == [1, 2, 3, 4, 5, 6]
+	 * @param ...arrays: any[] - The arrays to combine
+	 */
 	const combine = (...arrays: any[][]) =>
 		Array.from(
 			{ length: Math.max(...arrays.map((a) => a.length)) * arrays.length },
 			(_, i) => arrays[i % arrays.length][Math.floor(i / arrays.length)]
 		).filter((x) => x !== undefined);
-	// Download photos from the API
+	/**
+	 * Download photos from the API for a breed and sub-breed
+	 * @param breed
+	 * @param subBreed
+	 */
 	const downloadPhotos = async (breed: string, subBreed?: string) => {
 		if (photos[breedKey(breed, subBreed)]) return;
 		await fetch(`https://dog.ceo/api/breed/${breed}/${subBreed ? subBreed + '/' : ''}images`, {
@@ -31,22 +46,29 @@
 			})
 			.catch((err) => error(500, err.message));
 	};
-	// Handle the click event on an image
+	/**
+	 * Handles the click event on an image, showing the popup
+	 * @param src
+	 * @param alt
+	 */
 	const handleClick = (src: string, alt: string) => {
-		popupImage.update((value) => {
+		popupImage.update(() => {
 			return { src, alt };
 		});
 	};
 
 	selectedBreeds.subscribe(async (value) => {
 		let promises = [];
+		// Download photo URLs for each breed and sub-breed before showing them
 		for (const [breed, subBreed] of value) {
 			promises.push(downloadPhotos(breed, subBreed));
 		}
 		await Promise.all(promises);
 		selected = value.sort(([b1], [b2]) => b1.localeCompare(b2));
 	});
+
 	popupImage.subscribe((value) => {
+		// If the popup is closed, set the popup to null
 		popup = value;
 	});
 
@@ -55,7 +77,8 @@
 			photos[breedKey(breed, subBreed)].map((e) => [e, breedKey(breed, subBreed)])
 		)
 	);
-	$: first30 = images.slice(0, 30); // For animation, only flip the first 30 images
+	// For performance reasons, we only apply the flip animation to the first 30 images
+	$: first30 = images.slice(0, 30); 
 	$: rest = images.slice(30);
 </script>
 
@@ -84,7 +107,7 @@
 				</div>
 			</button>
 		{/each}
-		<!-- Same as before, but without flip animation for performance purposes -->
+		<!-- see `rest` declaration for why this is duplicating the above code -->
 		{#each rest as [src, alt] (src)}
 			<button
 				transition:fade

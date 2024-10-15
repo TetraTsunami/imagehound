@@ -4,6 +4,9 @@
 	export let src = '';
 	export let alt = '';
 
+	/**
+	 * Close the popup when it is clicked
+	 */
 	const handleClick = () => {
 		popupImage.update((value) => {
 			return null;
