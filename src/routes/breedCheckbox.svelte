@@ -9,7 +9,8 @@
 		selected = value;
 	});
 	export let breed: string;
-	export let subBreed: string = "";
+	export let subBreed = "";
+  export let summary = false;
 
 	/**
 	 * Checks if a breed or sub-breed is selected
@@ -26,10 +27,8 @@
 	/**
 	 * Sets the selection state of the breed and subBreed
 	 * @param state
-	 * @param breed
-	 * @param subBreed
 	 */
-	const setSelection = (state: boolean, breed: string, subBreed?: string) => {
+	const setSelection = (state: boolean) => {
 		selectedBreeds.update((value) => {
 			if (subBreed) {
 				// If there's a sub-breed, add it to the selected breeds
@@ -54,19 +53,17 @@
 	/**
 	 * Handles the change event on a checkbox
 	 * @param e
-	 * @param breed
-	 * @param subBreed
 	 */
-	const checkboxEvent = (e: Event, breed: string, subBreed?: string) => {
-		setSelection((e.target as HTMLInputElement).checked, breed, subBreed);
+	const checkboxEvent = (e: Event) => {
+		setSelection((e.target as HTMLInputElement).checked);
 	};
 </script>
 
 <label
 	for={subBreed || breed}
-	class={`w-full inline-block cursor-pointer ${
+	class={`${!summary && "w-full"} inline-block cursor-pointer ${
 		isSelected(selected, breed, subBreed)
-			? 'text-blue-500 dark:text-blue-300'
+			? 'text-blue-500 dark:text-blue-300 font-bold'
 			: 'text-gray-800 dark:text-gray-200'
 	}`}
 >
@@ -75,7 +72,7 @@
 		checked={isSelected(selected, breed, subBreed)}
 		id={subBreed || breed}
 		class="hidden"
-		on:change={(e) => checkboxEvent(e, breed)}
+		on:change={(e) => checkboxEvent(e)}
 	/>
-	{breed[0].toUpperCase() + breed.slice(1)}
+	{subBreed ? subBreed[0].toUpperCase() + subBreed.slice(1) : breed[0].toUpperCase() + breed.slice(1)}
 </label>

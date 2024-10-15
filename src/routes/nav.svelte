@@ -55,7 +55,7 @@
 					{:else}
 						<details open={isSelected(selected, breed) || Boolean(search)}>
 							<summary>
-								<BreedCheckbox {breed} />
+								<BreedCheckbox {breed} summary />
 							</summary>
 							<ul class="pl-4">
 								{#each subBreeds as subBreed}
