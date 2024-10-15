@@ -4,19 +4,22 @@
 	import Popup from './popup.svelte';
 	import { fade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
-	import { linear, quartOut } from 'svelte/easing';
+	import { quartOut } from 'svelte/easing';
 
 	let selected: string[][] = [];
 	let photos: Record<string, string[]> = {};
 	let popup: any;
-
+	
+	// Calculates the key for the photos object, so we can cache the photos for each breed
 	const breedKey = (breed: string, subBreed?: string) =>
 		subBreed ? `${breed}/${subBreed}` : breed;
+	// Combines multiple arrays into one, spreading the elements in a round-robin fashion
 	const combine = (...arrays: any[][]) =>
 		Array.from(
 			{ length: Math.max(...arrays.map((a) => a.length)) * arrays.length },
 			(_, i) => arrays[i % arrays.length][Math.floor(i / arrays.length)]
 		).filter((x) => x !== undefined);
+	// Download photos from the API
 	const downloadPhotos = async (breed: string, subBreed?: string) => {
 		if (photos[breedKey(breed, subBreed)]) return;
 		await fetch(`https://dog.ceo/api/breed/${breed}/${subBreed ? subBreed + '/' : ''}images`, {
@@ -28,6 +31,7 @@
 			})
 			.catch((err) => error(500, err.message));
 	};
+	// Handle the click event on an image
 	const handleClick = (src: string, alt: string) => {
 		popupImage.update((value) => {
 			return { src, alt };
@@ -69,12 +73,18 @@
 				class="w-[min(100%, 20rem)] relative"
 				aria-label={alt}
 			>
-				<img {src} {alt} class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg" loading="lazy" />
+				<img
+					{src}
+					{alt}
+					class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg"
+					loading="lazy"
+				/>
 				<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-sm text-white">
 					{alt}
 				</div>
 			</button>
 		{/each}
+		<!-- Same as before, but without flip animation for performance purposes -->
 		{#each rest as [src, alt] (src)}
 			<button
 				transition:fade
@@ -83,7 +93,12 @@
 				class="w-[min(100%, 20rem)] relative"
 				aria-label={alt}
 			>
-				<img {src} {alt} class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg" loading="lazy" />
+				<img
+					{src}
+					{alt}
+					class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg"
+					loading="lazy"
+				/>
 				<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-sm text-white">
 					{alt}
 				</div>

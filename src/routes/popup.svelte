@@ -1,5 +1,4 @@
 <script>
-	import { flip } from 'svelte/animate';
 	import { popupImage } from '../stores';
 	import { fade } from 'svelte/transition';
 	export let src = '';
