@@ -41,6 +41,7 @@
 				}
 			} else {
 				if (state) {
+					value = value.filter(([b, sb]) => b !== breed);
 					value.push([breed, '']);
 				} else {
 					// If the main breed is unchecked, remove all sub-breeds too
