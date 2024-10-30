@@ -85,7 +85,7 @@
 {#if popup}
 	<Popup src={popup.src} alt={popup.alt} />
 {/if}
-<div class="w-full">
+<div class="h-full w-full overflow-y-auto">
 	<div class="images-grid">
 		{#each first30 as [src, alt] (src)}
 			<button
@@ -93,13 +93,13 @@
 				transition:fade
 				on:click={() => handleClick(src, alt)}
 				on:keydown={(e) => e.key === 'Enter' && handleClick(src, alt)}
-				class="w-[min(100%, 20rem)] relative"
+				class="w-[min(100%, 20rem)] relative overflow-clip rounded-lg"
 				aria-label={alt}
 			>
 				<img
 					{src}
 					{alt}
-					class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg"
+					class="aspect-[3/2] w-full object-cover"
 					loading="lazy"
 				/>
 				<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-sm text-white">
@@ -113,13 +113,13 @@
 				transition:fade
 				on:click={() => handleClick(src, alt)}
 				on:keydown={(e) => e.key === 'Enter' && handleClick(src, alt)}
-				class="w-[min(100%, 20rem)] relative"
+				class="w-[min(100%, 20rem)] relative overflow-clip rounded-lg"
 				aria-label={alt}
 			>
 				<img
 					{src}
 					{alt}
-					class="aspect-[3/2] w-full rounded-lg object-cover shadow-i-lg"
+					class="aspect-[3/2] w-full object-cover"
 					loading="lazy"
 				/>
 				<div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-sm text-white">

@@ -6,9 +6,13 @@
 </script>
 
 <div class="flex min-h-screen w-full justify-center px-2">
-	<div class="container flex max-h-screen gap-4 overflow-scroll">
-		<Nav breeds={data.breeds} />
-		<slot></slot>
+	<div class="container max-h-screen gap-4 overflow-auto md:flex">
+		<div class="h-[33vh] sm:h-auto">
+			<Nav breeds={data.breeds} />
+		</div>
+		<div class="h-[66vh] flex-1 sm:h-auto">
+			<slot></slot>
+		</div>
 	</div>
 </div>
 
