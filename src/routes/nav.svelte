@@ -31,8 +31,9 @@
 	 * Filters the breeds based on the search query, if there is one
 	 */
 	$: filtered = breeds.filter(([breed, subBreeds]) => {
-		if (breed.includes(search)) return true;
-		if (subBreeds.some((subBreed) => subBreed.includes(search))) return true;
+		const search = search.toLowerCase();
+		if (breed.toLowerCase().includes(search)) return true;
+		if (subBreeds.some((subBreed) => subBreed.toLowerCase().includes(search))) return true;
 		return false;
 	});
 </script>
